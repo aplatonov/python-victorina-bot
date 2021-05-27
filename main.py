@@ -1,39 +1,37 @@
 import telebot
 import config
-from dbhelper import DBHelper
+from dbhelper.dbhelper import DBHelper
 
 bot = telebot.TeleBot(config.TOKEN)
+isRunning = False
 
+db = DBHelper()
+db.setup()
+db.disconnect()
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start', 'help'])
 def start_command(message):
     bot.send_message(
         message.chat.id,
-        'Поздравляем! Вы можете поучаствовать в викторине.\n' +
-        'Для начала викторины наберите /go.\n' +
-        'Для получения помощи наберите /help.'
-    )
-
-
-@bot.message_handler(commands=['help'])
-def start_handler(message):
-    bot.send_message(
-        message.chat.id,
-        'Привет, когда я вырасту, я буду викториной.\n' +
+        'Вы можете поучаствовать в викторине.\n' +
         'Для начала викторины наберите /go.\n' +
         'Для получения помощи наберите /help.'
     )
 
 
 @bot.message_handler(commands=['go'])
-def start_handler(message):
-    bot.send_message(
-        message.chat.id,
-        'Так будет начинаться викторина.\n' +
-        'id:' + str(message.from_user.id) + '\n' +
-        'username: ' + message.from_user.username + '\n' +
-        'first_name + last_name ' + message.from_user.first_name + ' ' + message.from_user.last_name
-    )
+def go_command(message):
+    global isRunning
+    if not isRunning:
+        isRunning = True
+        bot.send_message(
+            message.chat.id,
+            'Так будет начинаться викторина.\n' +
+            'id:' + str(message.from_user.id) + '\n' +
+            'username: ' + message.from_user.username + '\n' +
+            'first_name + last_name ' + message.from_user.first_name + ' ' + message.from_user.last_name
+        )
+        isRunning = False
 
 
 @bot.message_handler(content_types=['text'])
@@ -51,8 +49,4 @@ def text_handler(message):
         bot.send_message(chat_id, 'Я еще не очень интеллектуален, всего не знаю')
 
 
-db = DBHelper()
-db.setup()
-
-if __name__ == '__main__':
-    bot.polling(none_stop=True)
+bot.polling(none_stop=True)
