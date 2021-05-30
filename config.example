@@ -1,1 +1,2 @@
 TOKEN = 'BOT token to access the HTTP API'
+MAX_TRY = 3 # попыток на ответ
