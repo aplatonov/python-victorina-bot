@@ -49,8 +49,8 @@ class DBHelper:
 
     def get_questions_for_user(self, user_id, cnt):
         self.connect()
-        stmt = "SELECT * FROM question ORDER BY RANDOM() LIMIT ?"
-        args = (cnt,)
+        stmt = "SELECT * FROM question WHERE id NOT IN (SELECT question_id FROM user_question WHERE user_id = ?) ORDER BY RANDOM() LIMIT ?"
+        args = (user_id, cnt,)
         questions = self.conn.execute(stmt, args).fetchall()
         self.disconnect()
         return questions
@@ -83,9 +83,9 @@ class DBHelper:
         else:
             return None
 
-    def delete_user(self, user_id):
+    def reset_progress(self, user_id):
         self.connect()
-        stmt = "DELETE FROM user WHERE user_id = (?)"
+        stmt = "DELETE FROM user_question WHERE user_id = (?)"
         args = (user_id,)
         self.conn.execute(stmt, args)
         self.conn.commit()
