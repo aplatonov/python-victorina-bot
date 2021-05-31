@@ -16,7 +16,7 @@ def start_command(message):
         message.chat.id,
         'Вы можете поучаствовать в викторине.\n' +
         'Для получения вопроса наберите /go.\n' +
-        'ПОсмотреть свою статистику /info.\n' +
+        'Посмотреть свою статистику /info.\n' +
         'Для получения помощи наберите /help.'
     )
 
@@ -78,7 +78,7 @@ def process_question(message, question, current_try):
         return
     points = int(question[3]) // current_try
     db.upsert_user_points(user_id, int(question[0]), points)
-    bot.send_message(message.chat.id, 'Верно, заработано баллов {}'.format(points))
+    bot.send_message(message.chat.id, 'Верно, заработано баллов: {}'.format(points))
 
 
 @bot.message_handler(content_types=['text'])
