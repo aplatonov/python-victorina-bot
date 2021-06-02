@@ -88,7 +88,7 @@ def go_command(message):
                 'Вопрос для ' + first_name + ' ' + last_name + ':'
             )
             question = questions[0]
-            sent = bot.send_message(message.chat.id, question[1])
+            sent = bot.send_message(message.chat.id, question[1] + ' (макс. балл: ' + str(question[3]) + ')')
             bot.register_next_step_handler(sent, process_question, question, current_try)
         isRunning = False
 
