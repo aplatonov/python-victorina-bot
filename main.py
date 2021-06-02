@@ -1,7 +1,6 @@
 import telebot
 import config
 import time as tm
-from telebot import types
 from dbhelper.dbhelper import DBHelper
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -14,16 +13,18 @@ db.disconnect()
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
-	start_markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
-	start_markup.row('/start', '/help', '/hide')
-	start_markup.row('/go', '/info', '/obnull')
-	bot.send_message(message.chat.id, "Бот запущен!\nВведите /help для просмотра помощи.")
-	bot.send_message(message.from_user.id, "Добавлена клавиатура!\nНажмите /hide чтобы убрать клавиатуру ", reply_markup=start_markup)
+    start_markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=False)
+    start_markup.row('/start', '/help', '/hide')
+    start_markup.row('/go', '/info', '/obnull')
+    bot.send_message(message.chat.id, "Бот запущен!\nВведите /help для просмотра помощи.")
+    bot.send_message(message.from_user.id, "Добавлена клавиатура!\nНажмите /hide чтобы убрать клавиатуру ",
+                     reply_markup=start_markup)
+
 
 @bot.message_handler(commands=['hide'])
 def hide_command(message):
-	hide_markup = telebot.types.ReplyKeyboardRemove()
-	bot.send_message(message.chat.id, 'Клавиатура убрана.\nВведите /start чтобы ее вернуть.', reply_markup=hide_markup)
+    hide_markup = telebot.types.ReplyKeyboardRemove()
+    bot.send_message(message.chat.id, 'Клавиатура убрана.\nВведите /start чтобы ее вернуть.', reply_markup=hide_markup)
 
 
 @bot.message_handler(commands=['help'])
@@ -45,13 +46,13 @@ def start_command(message):
     first_name = message.from_user.first_name
     last_name = message.from_user.last_name
     info = db.get_info(user_id)
-    if info != None:
+    if info is not None:
         bot.send_message(
             message.chat.id,
             'Пользователь ' + first_name + ' ' + last_name + ' (id: ' + str(user_id) + ', ' + username + '):\n' +
             '\t- вопросов: ' + str(info.get("count")) + '\n' +
             '\t- заработано баллов: ' + str(info.get("sum"))
-    )
+        )
 
 
 @bot.message_handler(commands=['obnull'])
@@ -131,7 +132,7 @@ def text_handler(message):
 
 # bot.polling(none_stop=True)
 while True:
-	try:
-		bot.infinity_polling(True)
-	except Exception:
-		tm.sleep(1)
+    try:
+        bot.infinity_polling(True)
+    except Exception:
+        tm.sleep(1)
